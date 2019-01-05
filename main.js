@@ -113,18 +113,19 @@ class App {
   async addContent() {
     // build up list of post elemets
     const posts = this.metadata.map(post => {
-      const a = document.createElement('a')
       const article = document.createElement('article')
+      const a = document.createElement('a')
       const h3 = document.createElement('h3')
       const title = document.createTextNode(post.title)
       h3.appendChild(title)
       a.appendChild(h3)
+      a.addEventListener('click', () => this.onPostClick(`/${post.slug}`))
+      article.appendChild(a)
       const p = document.createElement('p')
       const snippet = document.createTextNode(post.snippet)
       p.appendChild(snippet)
-      a.appendChild(p)
-      a.addEventListener('click', () => this.onPostClick(`/${post.slug}`))
-      return a
+      article.appendChild(p)
+      return article
     })
 
     // clear loading state

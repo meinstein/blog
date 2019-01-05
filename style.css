@@ -40,3 +40,7 @@ p {
 a > h3 {
   text-decoration: underline;
 }
+
+a:hover {
+  cursor: pointer;
+}
