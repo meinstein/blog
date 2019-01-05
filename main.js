@@ -96,7 +96,7 @@ class App {
 
   addHeader() {
     const h1 = document.createElement('h1')
-    const text = document.createTextNode('Baz')
+    const text = document.createTextNode('FuhQu')
     h1.appendChild(text)
     this.headerNode.appendChild(h1)
   }
