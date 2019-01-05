@@ -6,11 +6,11 @@ A simple blog with none of the over-engineered bells and whistles of typical JS 
 
 ## Local Dev
 
-Spin up a simple http server so fetching works:
+Spin the dev server:
 ```
-python -m SimpleHTTPServer
+node devServer.js
 ```
-And navigate to: `localhost:8000`
+And navigate to: `localhost:9000`
 
 ## Adding Posts
 
