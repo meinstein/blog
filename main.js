@@ -7,76 +7,96 @@ class App {
   async init() {
     this.addContainerElements()
     this.addHeader()
-    this.addShowdown()
     this.addListeners()
   }
 
   async addListeners() {
-    // window.onpopstate = () => {
-    //   contentDiv.innerHTML = routes[window.location.pathname]
-    // }
-    // get metadata
-    const metadata = await fetch("./metadata.json")
-    this.metadata = await metadata.json()
-    this.routes = this.metadata.map(post => post.slug)
     /**
-     * Check the landing path first.
+     * Fetch metdata in order to verify routes
      */
-    window.addEventListener("load", () => {
+    const metadata = await fetch('./metadata.json')
+    this.metadata = await metadata.json()
+    /**
+     * Add slash in order to reliably match against location.pathname
+     */
+    this.routes = this.metadata.map(post => '/' + post.slug)
+    /**
+     * Add the showdown dep before rendering routes
+     */
+    await this.addShowdown()
+    /**
+     * Add routing logic into the mix
+     */
+    this.router()
+    /**
+     * Check the landing path first
+     */
+    window.onpopstate = () => this.router()
+  }
+
+  router() {
+    /**
+     * Landed at root. No need to validate. Render home content.
+     */
+    if (location.pathname === '/') {
+      this.addContent()
       /**
-       * If landed at root, no need to validate.
-       * Render content metadata.
+       * Recognize route so render the post.
        */
-      if (window.location.pathname === "/") {
-        this.addContent()
-      } else if (this.routes.includes(location.pathname)) {
-        this.addPost(location.pathname)
-      } else {
-        window.history.pushState({}, "/", window.location.origin)
-      }
-    })
+    } else if (this.routes.includes(location.pathname)) {
+      this.addPost(location.pathname)
+      /**
+       * Do not recognize route, so render home content.
+       */
+    } else {
+      window.history.pushState({}, '/', window.location.origin)
+      this.addContent()
+    }
   }
 
   get rootNode() {
-    return document.getElementById("root")
+    return document.getElementById('root')
   }
 
   get headerNode() {
-    return document.getElementById("header")
+    return document.getElementById('header')
   }
 
   get sectionNode() {
-    return document.getElementById("section")
+    return document.getElementById('section')
   }
 
   addContainerElements() {
     // add header
-    const header = document.createElement("header")
-    header.id = "header"
+    const header = document.createElement('header')
+    header.id = 'header'
     this.rootNode.appendChild(header)
     // add content section
-    const section = document.createElement("section")
+    const section = document.createElement('section')
     // add initial loading text
-    const loadingText = document.createTextNode("Loading...")
+    const loadingText = document.createTextNode('Loading...')
     section.appendChild(loadingText)
-    section.id = "section"
+    section.id = 'section'
     this.rootNode.appendChild(section)
   }
 
   addShowdown() {
-    const script = document.createElement("script")
-    script.type = "text/javascript"
-    script.async = true
-    script.src = "https://cdn.rawgit.com/showdownjs/showdown/1.9.0/dist/showdown.min.js"
-    document.getElementsByTagName("head")[0].appendChild(script)
-    script.onload = () => {
-      this.converter = new showdown.Converter()
-    }
+    return new Promise(resolve => {
+      const script = document.createElement('script')
+      script.type = 'text/javascript'
+      script.async = true
+      script.src = 'https://cdn.rawgit.com/showdownjs/showdown/1.9.0/dist/showdown.min.js'
+      document.getElementsByTagName('head')[0].appendChild(script)
+      script.onload = () => {
+        this.converter = new showdown.Converter()
+        resolve()
+      }
+    })
   }
 
   addHeader() {
-    const h1 = document.createElement("h1")
-    const text = document.createTextNode("Baz")
+    const h1 = document.createElement('h1')
+    const text = document.createTextNode('Baz')
     h1.appendChild(text)
     this.headerNode.appendChild(h1)
   }
@@ -84,22 +104,22 @@ class App {
   async addContent() {
     // build up list of post elemets
     const posts = this.metadata.map(post => {
-      const a = document.createElement("a")
-      const article = document.createElement("article")
-      const h3 = document.createElement("h3")
+      const a = document.createElement('a')
+      const article = document.createElement('article')
+      const h3 = document.createElement('h3')
       const title = document.createTextNode(post.title)
       h3.appendChild(title)
       a.appendChild(h3)
-      const h6 = document.createElement("h6")
+      const h6 = document.createElement('h6')
       const snippet = document.createTextNode(post.snippet)
       h6.appendChild(snippet)
       a.appendChild(h6)
-      a.addEventListener("click", () => this.onPostClick(`/${post.slug}`))
+      a.addEventListener('click', () => this.onPostClick(`/${post.slug}`))
       return a
     })
 
     // clear loading state
-    this.sectionNode.innerHTML = ""
+    this.sectionNode.innerHTML = ''
     posts.forEach(post => this.sectionNode.appendChild(post))
 
     this.rootNode.appendChild(section)
@@ -119,7 +139,7 @@ class App {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   /**
    * Ensure that the user is displayed the right content when
    * they navigate back in their browsing history.
