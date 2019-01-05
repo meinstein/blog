@@ -102,7 +102,7 @@ class App {
     this.headerNode.appendChild(h2)
     // big header
     const h1 = document.createElement('h1')
-    const text1 = document.createTextNode('This very important snowflake has something to say.')
+    const text1 = document.createTextNode('This very special snowflake has something to say.')
     h1.appendChild(text1)
     this.headerNode.appendChild(h1)
     // add horizontal line

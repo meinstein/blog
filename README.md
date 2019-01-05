@@ -19,7 +19,7 @@ And navigate to: `localhost:9000`
 Adding a post is a two-step process:
 
 1. Add a `.md` file with the post content
-2. Update the `metadata.json` file at the root of the project with the relevant details.
+2. Update the `metadata.json` file at the root of the project with the relevant details. The `slug` property must match the file name (without .md extension). The `snippet` property is the first paragraph from the piece.
 
 ## Publishing
 
