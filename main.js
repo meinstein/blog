@@ -6,7 +6,7 @@ class App {
 
   async init() {
     this.addContainerElements()
-    this.addHeader()
+    this.addHeaderElements()
     this.addListeners()
   }
 
@@ -94,11 +94,20 @@ class App {
     })
   }
 
-  addHeader() {
+  addHeaderElements() {
+    // light header
+    const h2 = document.createElement('h2')
+    const text2 = document.createTextNode('fuhqu')
+    h2.appendChild(text2)
+    this.headerNode.appendChild(h2)
+    // big header
     const h1 = document.createElement('h1')
-    const text = document.createTextNode('FuhQu')
-    h1.appendChild(text)
+    const text1 = document.createTextNode('This very important snowflake has something to say.')
+    h1.appendChild(text1)
     this.headerNode.appendChild(h1)
+    // add horizontal line
+    const hr = document.createElement('hr')
+    this.headerNode.appendChild(hr)
   }
 
   async addContent() {
@@ -110,10 +119,10 @@ class App {
       const title = document.createTextNode(post.title)
       h3.appendChild(title)
       a.appendChild(h3)
-      const h6 = document.createElement('h6')
+      const p = document.createElement('p')
       const snippet = document.createTextNode(post.snippet)
-      h6.appendChild(snippet)
-      a.appendChild(h6)
+      p.appendChild(snippet)
+      a.appendChild(p)
       a.addEventListener('click', () => this.onPostClick(`/${post.slug}`))
       return a
     })
