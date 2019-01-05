@@ -74,8 +74,7 @@ class App {
     // add content section
     const section = document.createElement('section')
     // add initial loading text
-    const loadingText = document.createTextNode('Loading...')
-    section.appendChild(loadingText)
+    section.innerHTML = '<p>Loading...</p>'
     section.id = 'section'
     this.rootNode.appendChild(section)
   }
