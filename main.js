@@ -96,7 +96,7 @@ class App {
   addHeaderElements() {
     // light header
     const h2 = document.createElement('h2')
-    const text2 = document.createTextNode('fuhqu')
+    const text2 = document.createTextNode('fuhqu.com')
     h2.appendChild(text2)
     this.headerNode.appendChild(h2)
     // big header
@@ -112,7 +112,9 @@ class App {
   async addContent() {
     // build up list of post elemets
     const posts = this.metadata.map(post => {
+      // create container element
       const article = document.createElement('article')
+      // add title
       const a = document.createElement('a')
       const h3 = document.createElement('h3')
       const title = document.createTextNode(post.title)
@@ -120,10 +122,22 @@ class App {
       a.appendChild(h3)
       a.addEventListener('click', () => this.onPostClick(`/${post.slug}`))
       article.appendChild(a)
+      // add location
+      const location = document.createElement('div')
+      location.className = 'location'
+      location.appendChild(document.createTextNode(post.location))
+      article.appendChild(location)
+      // add estimated time
+      const estimatedTime = document.createElement('div')
+      estimatedTime.className = 'estimated-time'
+      estimatedTime.appendChild(document.createTextNode(post.time + ' minutes'))
+      article.appendChild(estimatedTime)
+      // add snippet
       const p = document.createElement('p')
       const snippet = document.createTextNode(post.snippet)
       p.appendChild(snippet)
       article.appendChild(p)
+      // return article!
       return article
     })
 

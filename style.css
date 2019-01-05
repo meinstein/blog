@@ -1,54 +1,66 @@
 body {
   margin: 0;
   padding: 0;
-  font-size: 16px;
-  background: #111111;
-  color: white;
-  line-height: 1.5;
+  font-size: 20px;
+  background: white;
+  color: #333333;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 h1,
 h2,
-h3,
-p {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+h3 {
   font-style: normal;
   font-variant: normal;
-  margin: 0.75rem 0;
+  margin: 1em 0;
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: 1.6em;
+  line-height: 1.25em;
   font-weight: 600;
 }
 
 h2 {
   font-size: 1.4rem;
   font-weight: 400;
+  line-height: 1.6em;
 }
 
 h3 {
-  font-size: 1.6rem;
-  font-weight: 300;
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1.6em;
 }
 
 p {
-  font-family: TimesNewRoman, 'Times New Roman', Times, Baskerville, Georgia, serif;
-  letter-spacing: 0.2px;
-  font-size: 1.2rem;
+  font-size: 1em;
   font-style: normal;
   font-variant: normal;
   font-weight: 400;
+  line-height: 1.6em;
+  padding: 6px 0;
+}
+
+.estimated-time {
+  font-size: 0.65em;
+  line-height: 1.5em;
+}
+
+.location {
+  font-size: 0.9em;
+  font-style: italic;
+  line-height: 1.4em;
 }
 
 #root {
   margin: auto;
   padding: 1rem;
-  max-width: 34em;
+  max-width: 30em;
 }
 
-a > h3 {
-  text-decoration: underline;
+a {
+  color: indianred;
 }
 
 a:hover {
