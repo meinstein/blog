@@ -2,11 +2,12 @@ class App {
   constructor() {
     this.converter = null
     this.metadata = null
+    this.routes = []
   }
 
   async init() {
     this.addContainerElements()
-    this.addHeaderElements()
+    this.addDefaultHeaderElements()
     this.addListeners()
   }
 
@@ -62,9 +63,30 @@ class App {
     return document.getElementById('header')
   }
 
+  get headerContentNode() {
+    return document.getElementById('header-content')
+  }
+
   get sectionNode() {
     return document.getElementById('section')
   }
+
+  // get pinSvgElement() {
+  //   const svg = document.createElement('svg')
+  //   svg.setAttribute('width', 24)
+  //   svg.setAttribute('height', 24)
+  //   svg.setAttribute('fill-rule', 'evenodd')
+  //   svg.setAttribute('clip-rule', 'evenodd')
+  //   svg.setAttribute('height', 24)
+  //   svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+  //   const path = document.createElement('path')
+  //   path.setAttribute(
+  //     'd',
+  //     'M12 10c-1.104 0-2-.896-2-2s.896-2 2-2 2 .896 2 2-.896 2-2 2m0-5c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3m-7 2.602c0-3.517 3.271-6.602 7-6.602s7 3.085 7 6.602c0 3.455-2.563 7.543-7 14.527-4.489-7.073-7-11.072-7-14.527m7-7.602c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602'
+  //   )
+  //   svg.appendChild(path)
+  //   return svg
+  // }
 
   addContainerElements() {
     // add header
@@ -93,23 +115,68 @@ class App {
     })
   }
 
-  addHeaderElements() {
-    // light header
+  addDefaultHeaderElements() {
+    // add page title
     const h2 = document.createElement('h2')
-    const text2 = document.createTextNode('fuhqu.com')
+    const text2 = document.createTextNode('fuhqu')
     h2.appendChild(text2)
     this.headerNode.appendChild(h2)
+    // add container where other read info will
+    const headerContent = document.createElement('div')
+    headerContent.id = 'header-content'
+    header.appendChild(headerContent)
+  }
+
+  addHomePageHeaderElements() {
+    // container div
+    const div = document.createElement('div')
+    div.style = 'display: flex; align-items: flex-start;'
+    // image element
+    const img = document.createElement('img')
+    img.style = 'border-radius: 50%; max-width: 60px; margin: 26px 12px 0 0;'
+    img.id = 'profile-picture'
+    img.src = './portrait.jpg'
+    div.appendChild(img)
     // big header
-    const h1 = document.createElement('h1')
-    const text1 = document.createTextNode('This very special snowflake has something to say.')
-    h1.appendChild(text1)
-    this.headerNode.appendChild(h1)
+    const p = document.createElement('p')
+    p.style = 'font-weight: 300;'
+    const text1 = document.createTextNode(
+      'This very special snowflake has something to say. Personal blog of Maximillian Einstein.'
+    )
+    p.appendChild(text1)
+    div.appendChild(p)
+    // clear previous content
+    this.headerContentNode.innerHTML = ''
+    // add new content
+    this.headerContentNode.appendChild(div)
     // add horizontal line
-    const hr = document.createElement('hr')
-    this.headerNode.appendChild(hr)
+    this.headerContentNode.appendChild(document.createElement('hr'))
+  }
+
+  addPostPageHeaderElements(slug) {
+    const post = this.metadata.find(post => '/' + post.slug === slug)
+    const h1 = document.createElement('h1')
+    const text1 = document.createTextNode(post.title)
+    h1.appendChild(text1)
+    // add location
+    const location = document.createElement('div')
+    location.className = 'location'
+    location.appendChild(document.createTextNode(post.location))
+    // add estimated time
+    const estimatedTime = document.createElement('div')
+    estimatedTime.className = 'estimated-time'
+    estimatedTime.appendChild(document.createTextNode(post.time + ' minutes'))
+    // clear existing content
+    this.headerContentNode.innerHTML = ''
+    this.headerContentNode.appendChild(h1)
+    this.headerContentNode.appendChild(location)
+    this.headerContentNode.appendChild(estimatedTime)
+    this.headerContentNode.appendChild(document.createElement('hr'))
   }
 
   async addContent() {
+    // add default header
+    this.addHomePageHeaderElements()
     // build up list of post elemets
     const posts = this.metadata.map(post => {
       // create container element
@@ -149,10 +216,12 @@ class App {
   }
 
   async addPost(slug) {
+    this.addPostPageHeaderElements(slug)
     // get post data
     const post = await fetch(`./posts/${slug}.md`)
     const parsedPost = await post.text()
     const html = this.converter.makeHtml(parsedPost)
+
     this.sectionNode.innerHTML = html
   }
 
