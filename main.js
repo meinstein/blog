@@ -141,7 +141,7 @@ class App {
     const p = document.createElement('p')
     p.style = 'font-weight: 300;'
     const text1 = document.createTextNode(
-      'This very special snowflake has something to say. Personal blog of Maximillian Einstein.'
+      'Personal blog of Maximillian Einstein. This very special snowflake has something to say.'
     )
     p.appendChild(text1)
     div.appendChild(p)
