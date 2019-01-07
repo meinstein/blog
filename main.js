@@ -113,7 +113,7 @@ class App extends Dope {
       // float: 'left'
       // fontWeight: 300
       // },
-      text: 'Personal blog of Maximillian Einstein. This very special snowflake has something to say.'
+      text: 'This very special snowflake has something to say.'
     })
     // const container = this.create({
     //   element: 'div',
