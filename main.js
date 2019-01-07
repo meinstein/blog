@@ -82,8 +82,15 @@ class App extends Dope {
 
   addDefaultHeaderElements() {
     // add page title
-    const websiteTitle = this.create({ element: 'h2', text: 'fuhqu.com' })
-    const link = this.create({ element: 'a', href: 'https://www.fuhqu.com', children: [websiteTitle] })
+    const websiteTitle = this.create({
+      element: 'h2',
+      text: 'fuhqu.com',
+      onClick: () => this.onPostClick(`/`)
+    })
+    const link = this.create({
+      element: 'a',
+      children: [websiteTitle]
+    })
     const headerContent = this.create({ element: 'div', id: 'header-content' })
     this.grab({ id: 'header' }).setChildren([link, headerContent])
   }
@@ -133,18 +140,16 @@ class App extends Dope {
         lineHeight: '1.4em'
       }
     })
-    const estimatedTime = this.create({
+    const date = this.create({
       element: 'div',
-      text: `${post.time} minutes`,
+      text: post.date,
       style: {
-        fontSize: '0.65em',
+        fontSize: '0.7em',
         lineHeight: '1.5em'
       }
     })
-    const hr = this.create({
-      element: 'hr'
-    })
-    this.grab({ id: 'header-content' }).setChildren([title, location, estimatedTime, hr])
+    const hr = this.create({ element: 'hr' })
+    this.grab({ id: 'header-content' }).setChildren([title, location, date, hr])
   }
 
   async addContent() {
@@ -169,24 +174,21 @@ class App extends Dope {
           lineHeight: '1.4em'
         }
       })
-      // add estimated time
-      const estimatedTime = this.create({
+      const date = this.create({
         element: 'div',
-        text: `${post.time} minutes`,
+        text: post.date,
         style: {
-          fontSize: '0.65em',
+          fontSize: '0.7em',
           lineHeight: '1.5em'
         }
       })
-      // add snippet
       const snippet = this.create({
         element: 'p',
         text: post.snippet
       })
-      // create container element
       const article = this.create({
         element: 'article',
-        children: [link, location, estimatedTime, snippet]
+        children: [link, location, date, snippet]
       })
 
       return article
@@ -206,7 +208,7 @@ class App extends Dope {
 
   onPostClick(slug) {
     window.history.pushState({}, slug, window.location.origin + slug)
-    this.addPost(slug)
+    this.router()
   }
 }
 
@@ -220,20 +222,3 @@ document.addEventListener('DOMContentLoaded', () => {
   const app = new App()
   app.init()
 })
-
-// get pinSvgElement() {
-//   const svg = this.create({element: 'svg'})
-//   svg.setAttribute('width', 24)
-//   svg.setAttribute('height', 24)
-//   svg.setAttribute('fill-rule', 'evenodd')
-//   svg.setAttribute('clip-rule', 'evenodd')
-//   svg.setAttribute('height', 24)
-//   svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-//   const path = this.create({element: 'path'})
-//   path.setAttribute(
-//     'd',
-//     'M12 10c-1.104 0-2-.896-2-2s.896-2 2-2 2 .896 2 2-.896 2-2 2m0-5c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3m-7 2.602c0-3.517 3.271-6.602 7-6.602s7 3.085 7 6.602c0 3.455-2.563 7.543-7 14.527-4.489-7.073-7-11.072-7-14.527m7-7.602c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602'
-//   )
-//   svg.appendChild(path)
-//   return svg
-// }
