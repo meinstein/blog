@@ -3,8 +3,14 @@ body {
   padding: 0;
   font-size: 20px;
   background: white;
-  color: #333333;
+  color: #340bob;
   font-family: Helvetica, Arial, sans-serif;
+}
+
+#root {
+  margin: auto;
+  padding: 1em;
+  max-width: 30em;
 }
 
 h1,
@@ -42,8 +48,8 @@ p {
   padding: 6px 0;
 }
 
-#root {
-  margin: auto;
-  padding: 1em;
-  max-width: 30em;
+a * {
+  text-decoration: underline;
+  color: #e54b4b;
+  cursor: pointer;
 }
