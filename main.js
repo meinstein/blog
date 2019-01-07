@@ -9,7 +9,6 @@ class App extends Dope {
 
   async init() {
     this.addContainerElements()
-    this.addDefaultHeaderElements()
     this.addListeners()
   }
 
@@ -58,9 +57,10 @@ class App extends Dope {
   }
 
   addContainerElements() {
+    const nav = this.create({ element: 'nav', id: 'nav' })
     const header = this.create({ element: 'header', id: 'header' })
     const section = this.create({ element: 'section', id: 'section' })
-    this.grab({ id: 'root' }).addChildren([header, section])
+    this.grab({ id: 'root' }).addChildren([nav, header, section])
   }
 
   addShowdown() {
@@ -80,53 +80,35 @@ class App extends Dope {
     })
   }
 
-  addDefaultHeaderElements() {
-    // add page title
-    const websiteTitle = this.create({
+  addHomePageHeaderElements() {
+    const fuhqu = this.create({
+      element: 'h2',
+      text: 'fuhqu.com'
+    })
+    this.grab({ id: 'nav' }).setChildren([fuhqu])
+
+    const about = this.create({
+      element: 'h1',
+      text: 'This very special snowflake has something to say.'
+    })
+    const hr = this.create({ element: 'hr' })
+    this.grab({ id: 'header' }).setChildren([about, hr])
+  }
+
+  addPostPageHeaderElements(slug) {
+    const post = this.metadata.find(post => '/' + post.slug === slug)
+
+    const fuhqu = this.create({
       element: 'h2',
       text: 'fuhqu.com',
       onClick: () => this.onPostClick(`/`)
     })
     const link = this.create({
       element: 'a',
-      children: [websiteTitle]
+      children: [fuhqu]
     })
-    const headerContent = this.create({ element: 'div', id: 'header-content' })
-    this.grab({ id: 'header' }).setChildren([link, headerContent])
-  }
+    this.grab({ id: 'nav' }).setChildren([link])
 
-  addHomePageHeaderElements() {
-    // const picture = this.create({
-    //   element: 'img',
-    //   style: {
-    //     borderRadius: '50%',
-    //     maxWidth: '60px',
-    //     minWidth: '60px',
-    //     margin: '6px 12px 0 0',
-    //     float: 'left'
-    //   },
-    //   src: './portrait.jpg'
-    // })
-    const about = this.create({
-      element: 'h1',
-      // style: {
-      // float: 'left'
-      // fontWeight: 300
-      // },
-      text: 'This very special snowflake has something to say.'
-    })
-    // const container = this.create({
-    //   element: 'div',
-    //   children: [picture, about]
-    // })
-    // horizontal line
-    const hr = this.create({ element: 'hr' })
-    // clear previous content
-    this.grab({ id: 'header-content' }).setChildren([about, hr])
-  }
-
-  addPostPageHeaderElements(slug) {
-    const post = this.metadata.find(post => '/' + post.slug === slug)
     const title = this.create({
       element: 'h1',
       text: post.title
@@ -149,7 +131,7 @@ class App extends Dope {
       }
     })
     const hr = this.create({ element: 'hr' })
-    this.grab({ id: 'header-content' }).setChildren([title, location, date, hr])
+    this.grab({ id: 'header' }).setChildren([title, location, date, hr])
   }
 
   async addContent() {
