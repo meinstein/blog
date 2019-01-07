@@ -42,27 +42,8 @@ p {
   padding: 6px 0;
 }
 
-.estimated-time {
-  font-size: 0.65em;
-  line-height: 1.5em;
-}
-
-.location {
-  font-size: 0.9em;
-  font-style: italic;
-  line-height: 1.4em;
-}
-
 #root {
   margin: auto;
   padding: 1em;
   max-width: 30em;
-}
-
-a {
-  color: indianred;
-}
-
-a:hover {
-  cursor: pointer;
 }

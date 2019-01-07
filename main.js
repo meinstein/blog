@@ -47,7 +47,7 @@ class App {
     } else if (this.routes.includes(location.pathname)) {
       this.addPost(location.pathname)
       /**
-       * Do not recognize route, so render home content.
+       * Do not recognize provided route, so render home content.
        */
     } else {
       window.history.pushState({}, '/', window.location.origin)
@@ -71,15 +71,70 @@ class App {
     return document.getElementById('section')
   }
 
+  create(props) {
+    const { element, style, text, children, onClick, ...rest } = props
+    if (!props.element) {
+      throw new Error('Must include node!')
+    }
+
+    // the master element that will get returned
+    const el = document.createElement(element)
+
+    if (style) {
+      const properties = Object.keys(style)
+      properties.forEach(property => (el.style[property] = style[property]))
+    }
+
+    // apply rest of attributes!
+    if (rest) {
+      const attributes = Object.keys(rest)
+      attributes.forEach(attribute => (el[attribute] = rest[attribute]))
+    }
+
+    if (text) {
+      const textNode = document.createTextNode(text)
+      el.appendChild(textNode)
+    }
+
+    if (children) {
+      // TODO: check that it's a list and make sure each element is a valid dom node!
+      children.forEach(child => el.appendChild(child))
+    }
+
+    if (onClick) {
+      el.addEventListener('click', onClick)
+    }
+
+    // add setter for new children
+    el.setChildren = newChildren => {
+      // clear existing children
+      el.innerHTML = ''
+      // TODO: check that it's a list and make sure each element is a valid dom node!
+      newChildren.forEach(child => el.appendChild(child))
+    }
+
+    // add setter for new children
+    el.addChildren = newChildren => {
+      // TODO: check that it's a list and make sure each element is a valid dom node!
+      newChildren.forEach(child => el.appendChild(child))
+    }
+
+    return el
+  }
+
+  createText(text) {
+    return document.createTextNode(text)
+  }
+
   // get pinSvgElement() {
-  //   const svg = document.createElement('svg')
+  //   const svg = this.create({element: 'svg'})
   //   svg.setAttribute('width', 24)
   //   svg.setAttribute('height', 24)
   //   svg.setAttribute('fill-rule', 'evenodd')
   //   svg.setAttribute('clip-rule', 'evenodd')
   //   svg.setAttribute('height', 24)
   //   svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-  //   const path = document.createElement('path')
+  //   const path = this.create({element: 'path'})
   //   path.setAttribute(
   //     'd',
   //     'M12 10c-1.104 0-2-.896-2-2s.896-2 2-2 2 .896 2 2-.896 2-2 2m0-5c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3m-7 2.602c0-3.517 3.271-6.602 7-6.602s7 3.085 7 6.602c0 3.455-2.563 7.543-7 14.527-4.489-7.073-7-11.072-7-14.527m7-7.602c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602'
@@ -89,89 +144,90 @@ class App {
   // }
 
   addContainerElements() {
-    // add header
-    const header = document.createElement('header')
-    header.id = 'header'
+    const header = this.create({
+      element: 'header',
+      id: 'header'
+    })
+    const section = this.create({
+      element: 'section',
+      id: 'section'
+    })
     this.rootNode.appendChild(header)
-    // add content section
-    const section = document.createElement('section')
-    // add initial loading text
-    section.innerHTML = '<p>Loading...</p>'
-    section.id = 'section'
     this.rootNode.appendChild(section)
   }
 
   addShowdown() {
     return new Promise(resolve => {
-      const script = document.createElement('script')
-      script.type = 'text/javascript'
-      script.async = true
-      script.src = 'https://cdn.rawgit.com/showdownjs/showdown/1.9.0/dist/showdown.min.js'
+      const script = this.create({
+        element: 'script',
+        type: 'text/javascript',
+        async: true,
+        src: 'https://cdn.rawgit.com/showdownjs/showdown/1.9.0/dist/showdown.min.js',
+        onload: () => {
+          this.converter = new showdown.Converter()
+          resolve()
+        }
+      })
+      // add to document head
       document.getElementsByTagName('head')[0].appendChild(script)
-      script.onload = () => {
-        this.converter = new showdown.Converter()
-        resolve()
-      }
     })
   }
 
   addDefaultHeaderElements() {
     // add page title
-    const h2 = document.createElement('h2')
-    const text2 = document.createTextNode('fuhqu')
-    h2.appendChild(text2)
-    this.headerNode.appendChild(h2)
-    // add container where other read info will
-    const headerContent = document.createElement('div')
-    headerContent.id = 'header-content'
-    header.appendChild(headerContent)
+    const websiteTitle = this.create({
+      element: 'h2',
+      text: 'fuhqu.com'
+    })
+    const headerContent = this.create({
+      element: 'div',
+      id: 'header-content'
+    })
+    this.headerNode.appendChild(websiteTitle)
+    this.headerNode.appendChild(headerContent)
   }
 
   addHomePageHeaderElements() {
-    // container div
-    const div = document.createElement('div')
-    div.style = 'display: flex; align-items: flex-start;'
-    // image element
-    const img = document.createElement('img')
-    img.style = 'border-radius: 50%; max-width: 60px; margin: 26px 12px 0 0;'
-    img.id = 'profile-picture'
-    img.src = './portrait.jpg'
-    div.appendChild(img)
-    // big header
-    const p = document.createElement('p')
-    p.style = 'font-weight: 300;'
-    const text1 = document.createTextNode(
-      'Personal blog of Maximillian Einstein. This very special snowflake has something to say.'
-    )
-    p.appendChild(text1)
-    div.appendChild(p)
+    const picture = this.create({
+      element: 'img',
+      style: { borderRadius: '50%', maxWidth: '60px', margin: '26px 12px 0 0' },
+      src: './portrait.jpg'
+    })
+    const about = this.create({
+      element: 'p',
+      style: { fontWeight: 300 },
+      text: 'Personal blog of Maximillian Einstein. This very special snowflake has something to say.'
+    })
+    const container = this.create({
+      element: 'div',
+      style: { display: 'flex', alignItems: 'flex-start' },
+      children: [picture, about]
+    })
+    // horizontal line
+    const hr = this.create({ element: 'hr' })
     // clear previous content
-    this.headerContentNode.innerHTML = ''
-    // add new content
-    this.headerContentNode.appendChild(div)
-    // add horizontal line
-    this.headerContentNode.appendChild(document.createElement('hr'))
+    this.headerNode.addChildren([container, hr])
   }
 
   addPostPageHeaderElements(slug) {
     const post = this.metadata.find(post => '/' + post.slug === slug)
-    const h1 = document.createElement('h1')
-    const text1 = document.createTextNode(post.title)
+    const h1 = this.create({ element: 'h1' })
+    const text1 = this.createText(post.title)
     h1.appendChild(text1)
     // add location
-    const location = document.createElement('div')
+    const location = this.create({ element: 'div' })
     location.className = 'location'
-    location.appendChild(document.createTextNode(post.location))
+    location.appendChild(this.createText(post.location))
     // add estimated time
-    const estimatedTime = document.createElement('div')
+    const estimatedTime = this.create({ element: 'div' })
     estimatedTime.className = 'estimated-time'
-    estimatedTime.appendChild(document.createTextNode(post.time + ' minutes'))
+    estimatedTime.appendChild(this.createText(post.time + ' minutes'))
     // clear existing content
     this.headerContentNode.innerHTML = ''
     this.headerContentNode.appendChild(h1)
     this.headerContentNode.appendChild(location)
     this.headerContentNode.appendChild(estimatedTime)
-    this.headerContentNode.appendChild(document.createElement('hr'))
+    this.headerContentNode.appendChild(this.create({ element: 'hr' }))
   }
 
   async addContent() {
@@ -179,39 +235,49 @@ class App {
     this.addHomePageHeaderElements()
     // build up list of post elemets
     const posts = this.metadata.map(post => {
-      // create container element
-      const article = document.createElement('article')
-      // add title
-      const a = document.createElement('a')
-      const h3 = document.createElement('h3')
-      const title = document.createTextNode(post.title)
-      h3.appendChild(title)
-      a.appendChild(h3)
-      a.addEventListener('click', () => this.onPostClick(`/${post.slug}`))
-      article.appendChild(a)
-      // add location
-      const location = document.createElement('div')
-      location.className = 'location'
-      location.appendChild(document.createTextNode(post.location))
-      article.appendChild(location)
+      const title = this.create({
+        element: 'h3',
+        text: post.title,
+        onClick: () => this.onPostClick(`/${post.slug}`),
+        style: {
+          color: 'indianred',
+          pointer: 'cursor'
+        }
+      })
+      const location = this.create({
+        element: 'div',
+        text: post.location,
+        style: {
+          fontSize: '0.9em',
+          fontStyle: 'italic',
+          lineHeight: '1.4em'
+        }
+      })
       // add estimated time
-      const estimatedTime = document.createElement('div')
-      estimatedTime.className = 'estimated-time'
-      estimatedTime.appendChild(document.createTextNode(post.time + ' minutes'))
-      article.appendChild(estimatedTime)
+      const estimatedTime = this.create({
+        element: 'div',
+        text: `${post.time} minutes`,
+        style: {
+          fontSize: '0.65em',
+          lineHeight: '1.5em'
+        }
+      })
       // add snippet
-      const p = document.createElement('p')
-      const snippet = document.createTextNode(post.snippet)
-      p.appendChild(snippet)
-      article.appendChild(p)
-      // return article!
+      const snippet = this.create({
+        element: 'p',
+        text: post.snippet
+      })
+      // create container element
+      const article = this.create({
+        element: 'article',
+        children: [title, location, estimatedTime, snippet]
+      })
+
       return article
     })
-
-    // clear loading state
-    this.sectionNode.innerHTML = ''
-    posts.forEach(post => this.sectionNode.appendChild(post))
-
+    // add children to section node
+    this.sectionNode.setChildren(posts)
+    // add section to root node
     this.rootNode.appendChild(section)
   }
 
@@ -221,7 +287,6 @@ class App {
     const post = await fetch(`./posts/${slug}.md`)
     const parsedPost = await post.text()
     const html = this.converter.makeHtml(parsedPost)
-
     this.sectionNode.innerHTML = html
   }
 
