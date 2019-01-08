@@ -1,26 +1,49 @@
-class Dope {
-  _appendChildren(el, newChildren) {
-    newChildren.forEach(child => el.appendChild(child))
+export class Dope {
+  constructor(state = null) {
+    this._symbol = Symbol()
+    this._state = state
   }
 
-  _applyMethods(el) {
-    el.setChildren = newChildren => {
-      el.innerHTML = ''
-      this._appendChildren(el, newChildren)
+  createElement(element, props) {
+    return {
+      element,
+      props,
+      symbol: this._symbol
     }
-
-    el.addChildren = newChildren => this._appendChildren(el, newChildren)
-
-    return el
   }
 
-  create(props) {
-    const { element, style, text, children, onClick, ...rest } = props
-    if (!props.element) {
-      throw new Error('Must include node!')
-    }
+  set state(newState) {
+    this._state = newState
+    this._dispatchUpdate()
+  }
 
-    // the master element that will get returned
+  get state() {
+    return this._state
+  }
+
+  _dispatchUpdate() {
+    const event = new CustomEvent("update", {
+      detail: {
+        symbol: this._symbol
+      }
+    })
+
+    document.dispatchEvent(event)
+  }
+}
+
+export class DopeDOM {
+  constructor() {
+    this.nodeMap = {}
+    document.addEventListener("update", evt => {
+      this._update(evt.detail.symbol)
+    })
+  }
+
+  _createElement(component) {
+    const { element, symbol, props } = component()
+    const { style, text, children, onClick, ...rest } = props
+
     const el = document.createElement(element)
 
     if (style) {
@@ -28,7 +51,6 @@ class Dope {
       properties.forEach(property => (el.style[property] = style[property]))
     }
 
-    // apply rest of attributes!
     if (rest) {
       const attributes = Object.keys(rest)
       attributes.forEach(attribute => (el[attribute] = rest[attribute]))
@@ -39,25 +61,36 @@ class Dope {
       el.appendChild(textNode)
     }
 
-    if (children) {
-      // TODO: check that it's a list and make sure each element is a valid dom node!
-      children.forEach(child => el.appendChild(child))
-    }
-
     if (onClick) {
-      el.addEventListener('click', onClick)
+      el.addEventListener("click", onClick)
     }
 
-    return this._applyMethods(el)
+    if (children) {
+      children.forEach(child => {
+        el.appendChild(this._createElement(child))
+      })
+    }
+
+    this.nodeMap[symbol] = {
+      element: el,
+      component
+    }
+
+    return el
   }
 
-  grab(props) {
-    const { id, className } = props
-    if (id) {
-      const el = document.getElementById(id)
-      return this._applyMethods(el)
-    }
+  _update(symbol) {
+    const { element, component } = this.nodeMap[symbol]
+    Reflect.deleteProperty(this.nodeMap, symbol)
+    const parentNode = element.parentNode
+    element.remove()
+    const updatedNode = this._createElement(component)
+    parentNode.appendChild(updatedNode)
+  }
+
+  render(Root, rootNodeId) {
+    const rootElement = document.getElementById(rootNodeId)
+    const renderedRoot = this._createElement(Root)
+    rootElement.appendChild(renderedRoot)
   }
 }
-
-export default Dope
