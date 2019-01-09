@@ -3,8 +3,17 @@ import { Dope } from "./dope.js"
 const dope = new Dope()
 
 const Nav = props => {
+  const router = dope.router()
+  // if (router.route === "/") {
+  //   dope.state = "underline"
+  // } else {
+  //   dope.state = "none"
+  // }
+
   const nav = dope.createElement("nav", {
-    style: { background: "red", width: "300px", height: "50px" }
+    text: "foo",
+    style: { textDecoration: "underline" },
+    onClick: () => router.push("/foo")
   })
 
   return nav

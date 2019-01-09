@@ -13,12 +13,29 @@ export class Dope {
   }
 
   set state(newState) {
-    this._state = newState
+    this._state = {
+      ...this._state,
+      ...newState
+    }
     this._dispatchUpdate()
   }
 
   get state() {
     return this._state
+  }
+
+  router() {
+    // add popstate && pushstate event listeners to class constructor and dispatch update!
+    // remember to remove listeners too when done!
+    const route = window.location.pathname
+    const pushState = pathname => {
+      window.history.pushState({}, pathname, window.location.origin + pathname)
+    }
+
+    return {
+      route,
+      push: pushState
+    }
   }
 
   _dispatchUpdate() {
@@ -38,6 +55,12 @@ export class DopeDOM {
     document.addEventListener("update", evt => {
       this._update(evt.detail.symbol)
     })
+    window.onpopstate = evt => {
+      this._sendRouterEvent()
+    }
+    window.onpushstate = evt => {
+      this._sendRouterEvent()
+    }
   }
 
   _createElement(component) {
@@ -83,9 +106,8 @@ export class DopeDOM {
     const { element, component } = this.nodeMap[symbol]
     Reflect.deleteProperty(this.nodeMap, symbol)
     const parentNode = element.parentNode
-    element.remove()
-    const updatedNode = this._createElement(component)
-    parentNode.appendChild(updatedNode)
+    const updatedElement = this._createElement(component)
+    parentNode.replaceChild(updatedElement, element)
   }
 
   render(Root, rootNodeId) {
@@ -94,3 +116,5 @@ export class DopeDOM {
     rootElement.appendChild(renderedRoot)
   }
 }
+
+export const withProps = (Component, props) => () => Component(props)

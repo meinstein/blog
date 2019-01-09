@@ -1,21 +1,21 @@
-import { Dope } from "./dope.js"
+import { Dope, withProps } from "./dope.js"
 import Nav from "./Nav.js"
 
-const dope = new Dope()
+const dope = new Dope({ posts: null })
 
 fetch("./metadata.json")
   .then(response => {
     return response.json()
   })
   .then(data => {
-    dope.state = data
+    dope.state = { posts: data }
   })
 
 const Root = () => {
+  const navWithProps = withProps(Nav, { posts: dope.state.posts })
+
   return dope.createElement("div", {
-    children: [Nav],
-    text: dope.state && JSON.stringify(dope.state),
-    style: { background: "black", width: "300px", height: "300px" }
+    children: [navWithProps]
   })
 }
 
