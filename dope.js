@@ -25,21 +25,17 @@ export class Dope {
   }
 
   router() {
-    // add popstate && pushstate event listeners to class constructor and dispatch update!
-    // remember to remove listeners too when done!
-    const route = window.location.pathname
-    const pushState = pathname => {
-      window.history.pushState({}, pathname, window.location.origin + pathname)
-    }
-
     return {
-      route,
-      push: pushState
+      route: window.location.pathname,
+      push: pathname => {
+        window.history.pushState({}, pathname, window.location.origin + pathname)
+        this._dispatchUpdate()
+      }
     }
   }
 
   _dispatchUpdate() {
-    const event = new CustomEvent("update", {
+    const event = new CustomEvent('update', {
       detail: {
         symbol: this._symbol
       }
@@ -50,17 +46,12 @@ export class Dope {
 }
 
 export class DopeDOM {
-  constructor() {
-    this.nodeMap = {}
-    document.addEventListener("update", evt => {
-      this._update(evt.detail.symbol)
-    })
-    window.onpopstate = evt => {
-      this._sendRouterEvent()
-    }
-    window.onpushstate = evt => {
-      this._sendRouterEvent()
-    }
+  constructor(rootComponent, rootNode) {
+    this._nodeMap = {}
+    this._rootComponent = rootComponent
+    this._rootNode = rootNode
+    document.addEventListener('update', evt => this._update(evt.detail.symbol))
+    window.onpopstate = () => this._reRender()
   }
 
   _createElement(component) {
@@ -85,7 +76,7 @@ export class DopeDOM {
     }
 
     if (onClick) {
-      el.addEventListener("click", onClick)
+      el.addEventListener('click', onClick)
     }
 
     if (children) {
@@ -94,26 +85,28 @@ export class DopeDOM {
       })
     }
 
-    this.nodeMap[symbol] = {
-      element: el,
-      component
-    }
+    this._nodeMap[symbol] = { element: el, component }
 
     return el
   }
 
   _update(symbol) {
-    const { element, component } = this.nodeMap[symbol]
-    Reflect.deleteProperty(this.nodeMap, symbol)
-    const parentNode = element.parentNode
-    const updatedElement = this._createElement(component)
-    parentNode.replaceChild(updatedElement, element)
+    const { element: oldChild, component } = this._nodeMap[symbol]
+    Reflect.deleteProperty(this._nodeMap, symbol)
+    const parentNode = oldChild.parentNode
+    const newChild = this._createElement(component)
+    parentNode.replaceChild(newChild, oldChild)
   }
 
-  render(Root, rootNodeId) {
-    const rootElement = document.getElementById(rootNodeId)
-    const renderedRoot = this._createElement(Root)
-    rootElement.appendChild(renderedRoot)
+  _reRender() {
+    const newChild = this._createElement(this._rootComponent)
+    const oldChild = this._rootNode.firstChild
+    this._rootNode.replaceChild(newChild, oldChild)
+  }
+
+  render() {
+    const renderedRoot = this._createElement(this._rootComponent)
+    this._rootNode.appendChild(renderedRoot)
   }
 }
 
