@@ -5,13 +5,17 @@ const dope = new Dope()
 const Nav = props => {
   const router = dope.router()
 
-  const nav = dope.createElement('nav', {
-    text: 'foo',
-    style: { textDecoration: router.route === '/' ? 'underline' : 'none' },
-    onClick: () => router.push('/foo')
+  const h2 = dope.createElement('h2', {
+    text: 'fuhqu.com',
+    style: {
+      color: router.route === '/' ? 'black' : 'red',
+      textDecoration: router.route === '/' ? 'none' : 'underline'
+    }
   })
 
-  return nav
+  return dope.createElement('nav', {
+    children: [h2]
+  })
 }
 
 export default Nav

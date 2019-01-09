@@ -1,9 +1,11 @@
-import { Dope, withProps } from "./dope.js"
-import Nav from "./Nav.js"
+import { Dope, withProps } from './dope.js'
+
+import Nav from './Nav.js'
+import Header from './Header.js'
 
 const dope = new Dope({ posts: null })
 
-fetch("./metadata.json")
+fetch('./metadata.json')
   .then(response => {
     return response.json()
   })
@@ -12,10 +14,15 @@ fetch("./metadata.json")
   })
 
 const Root = () => {
-  const navWithProps = withProps(Nav, { posts: dope.state.posts })
+  const Loader = dope.createElement('div', {
+    text: 'Loading...'
+  })
 
-  return dope.createElement("div", {
-    children: [navWithProps]
+  const NavWithProps = withProps(Nav, { posts: dope.state.posts })
+  const HeaderWithProps = withProps(Header, { posts: dope.state.posts })
+
+  return dope.createElement('div', {
+    children: dope.state.posts ? [NavWithProps, HeaderWithProps] : [Loader]
   })
 }
 

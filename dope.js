@@ -5,6 +5,19 @@ export class Dope {
   }
 
   createElement(element, props) {
+    const { children } = props
+    if (children) {
+      const updatedChildren = children.map(child => {
+        if (typeof child === 'function') {
+          return child
+        }
+
+        return () => child
+      })
+
+      props.children = updatedChildren
+    }
+
     return {
       element,
       props,
