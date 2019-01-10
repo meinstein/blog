@@ -2,6 +2,7 @@ import { Dope, withProps } from './dope.js'
 
 import Nav from './Nav.js'
 import Header from './Header.js'
+import PostList from './PostList.js'
 
 const dope = new Dope({ posts: null })
 
@@ -20,9 +21,10 @@ const Root = () => {
 
   const NavWithProps = withProps(Nav, { posts: dope.state.posts })
   const HeaderWithProps = withProps(Header, { posts: dope.state.posts })
+  const PostListWithProps = withProps(PostList, { posts: dope.state.posts })
 
   return dope.createElement('div', {
-    children: dope.state.posts ? [NavWithProps, HeaderWithProps] : [Loader]
+    children: dope.state.posts ? [NavWithProps, HeaderWithProps, PostListWithProps] : [Loader]
   })
 }
 

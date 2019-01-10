@@ -14,7 +14,8 @@ const Nav = props => {
   })
 
   return dope.createElement('nav', {
-    children: [h2]
+    children: [h2],
+    onClick: router.route === '/' ? null : () => router.push('/')
   })
 }
 

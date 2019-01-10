@@ -9,8 +9,10 @@ const Header = props => {
     text: router.route === '/' ? 'This very special snowflake has something to say.' : 'foo'
   })
 
+  const hr = dope.createElement('hr')
+
   return dope.createElement('header', {
-    children: [h1]
+    children: [h1, hr]
   })
 }
 

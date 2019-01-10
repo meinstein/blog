@@ -4,7 +4,7 @@ export class Dope {
     this._state = state
   }
 
-  createElement(element, props) {
+  createElement(element, props = {}) {
     const { children } = props
     if (children) {
       const updatedChildren = children.map(child => {
@@ -98,7 +98,9 @@ export class DopeDOM {
       })
     }
 
-    this._nodeMap[symbol] = { element: el, component }
+    if (symbol) {
+      this._nodeMap[symbol] = { element: el, component }
+    }
 
     return el
   }
