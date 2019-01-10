@@ -42,9 +42,14 @@ export class Dope {
       route: window.location.pathname,
       push: pathname => {
         window.history.pushState({}, pathname, window.location.origin + pathname)
-        this._dispatchUpdate()
+        this._dispatchRender()
       }
     }
+  }
+
+  _dispatchRender() {
+    const event = new CustomEvent('render')
+    document.dispatchEvent(event)
   }
 
   _dispatchUpdate() {
@@ -64,7 +69,8 @@ export class DopeDOM {
     this._rootComponent = rootComponent
     this._rootNode = rootNode
     document.addEventListener('update', evt => this._update(evt.detail.symbol))
-    window.onpopstate = () => this._reRender()
+    document.addEventListener('render', () => this._render())
+    window.onpopstate = () => this._render()
   }
 
   _createElement(component) {
@@ -113,7 +119,7 @@ export class DopeDOM {
     parentNode.replaceChild(newChild, oldChild)
   }
 
-  _reRender() {
+  _render() {
     const newChild = this._createElement(this._rootComponent)
     const oldChild = this._rootNode.firstChild
     this._rootNode.replaceChild(newChild, oldChild)
