@@ -8,10 +8,11 @@ export class Dope {
     const { children } = props
     if (children) {
       const updatedChildren = children.map(child => {
-        if (typeof child === 'function') {
+        if (typeof child === "function") {
           return child
         }
 
+        child.isRootNode = false
         return () => child
       })
 
@@ -21,6 +22,7 @@ export class Dope {
     return {
       element,
       props,
+      isRootNode: true,
       symbol: this._symbol
     }
   }
@@ -48,12 +50,12 @@ export class Dope {
   }
 
   _dispatchRender() {
-    const event = new CustomEvent('render')
+    const event = new CustomEvent("render")
     document.dispatchEvent(event)
   }
 
   _dispatchUpdate() {
-    const event = new CustomEvent('update', {
+    const event = new CustomEvent("update", {
       detail: {
         symbol: this._symbol
       }
@@ -68,13 +70,13 @@ export class DopeDOM {
     this._nodeMap = {}
     this._rootComponent = rootComponent
     this._rootNode = rootNode
-    document.addEventListener('update', evt => this._update(evt.detail.symbol))
-    document.addEventListener('render', () => this._render())
+    document.addEventListener("update", evt => this._update(evt.detail.symbol))
+    document.addEventListener("render", () => this._render())
     window.onpopstate = () => this._render()
   }
 
   _createElement(component) {
-    const { element, symbol, props } = component()
+    const { element, props, symbol, isRootNode } = component()
     const { style, text, children, onClick, ...rest } = props
 
     const el = document.createElement(element)
@@ -95,7 +97,7 @@ export class DopeDOM {
     }
 
     if (onClick) {
-      el.addEventListener('click', onClick)
+      el.addEventListener("click", onClick)
     }
 
     if (children) {
@@ -104,7 +106,8 @@ export class DopeDOM {
       })
     }
 
-    if (symbol) {
+    // only add the root node from each component to the map
+    if (isRootNode) {
       this._nodeMap[symbol] = { element: el, component }
     }
 
