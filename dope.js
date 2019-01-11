@@ -1,14 +1,26 @@
+/**
+ * TODOS:
+ * Accept null as a valid return from component
+ * Accept lists of children to be returned from component
+ */
+
 export class Dope {
   constructor(state = null) {
     this._symbol = Symbol()
     this._state = state
+    this._onMount = null
+    // document.addEventListener('onMount', () => this._onMount && this._onMount(), { once: true })
+  }
+
+  onMount(cb) {
+    this._onMount = cb
   }
 
   createElement(element, props = {}) {
     const { children } = props
     if (children) {
       const updatedChildren = children.map(child => {
-        if (typeof child === "function") {
+        if (typeof child === 'function') {
           return child
         }
 
@@ -23,7 +35,8 @@ export class Dope {
       element,
       props,
       isRootNode: true,
-      symbol: this._symbol
+      symbol: this._symbol,
+      onMount: this._onMount
     }
   }
 
@@ -54,18 +67,20 @@ export class Dope {
   }
 
   _dispatchRender() {
-    const event = new CustomEvent("render")
+    const event = new CustomEvent('render')
     document.dispatchEvent(event)
   }
 
   _dispatchUpdate() {
-    const event = new CustomEvent("update", {
+    const event = new CustomEvent('update', {
       detail: {
+        onMount: () => this._onMount(),
         symbol: this._symbol
       }
     })
 
     document.dispatchEvent(event)
+    this.onMount = null
   }
 }
 
@@ -74,8 +89,8 @@ export class DopeDOM {
     this._nodeMap = {}
     this._rootComponent = rootComponent
     this._rootNode = rootNode
-    document.addEventListener("update", evt => this._update(evt.detail.symbol))
-    document.addEventListener("render", () => this._render())
+    document.addEventListener('update', evt => this._update(evt.detail.symbol, evt.detail.onMount))
+    document.addEventListener('render', () => this._render())
     window.onpopstate = () => this._render()
   }
 
@@ -102,7 +117,7 @@ export class DopeDOM {
     }
 
     if (onClick) {
-      el.addEventListener("click", onClick)
+      el.addEventListener('click', onClick)
     }
 
     if (children) {
@@ -119,23 +134,32 @@ export class DopeDOM {
     return el
   }
 
-  _update(symbol) {
+  _dispatchMount() {
+    const event = new CustomEvent('onMount')
+    document.dispatchEvent(event)
+  }
+
+  _update(symbol, onMount) {
+    console.log(onMount)
     const { element: oldChild, component } = this._nodeMap[symbol]
     Reflect.deleteProperty(this._nodeMap, symbol)
     const parentNode = oldChild.parentNode
     const newChild = this._createElement(component)
     parentNode.replaceChild(newChild, oldChild)
+    onMount()
   }
 
   _render() {
     const newChild = this._createElement(this._rootComponent)
     const oldChild = this._rootNode.firstChild
     this._rootNode.replaceChild(newChild, oldChild)
+    this._dispatchMount()
   }
 
   render() {
     const renderedRoot = this._createElement(this._rootComponent)
     this._rootNode.appendChild(renderedRoot)
+    this._dispatchMount()
   }
 }
 

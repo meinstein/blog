@@ -1,7 +1,7 @@
-import { Dope, withProps } from "./dope.js"
+import { Dope, withProps } from './dope.js'
 
-import PostLocation from "./components/PostLocation.js"
-import PostDate from "./components/PostDate.js"
+import PostLocation from './components/PostLocation.js'
+import PostDate from './components/PostDate.js'
 
 const dope = new Dope()
 
@@ -11,7 +11,7 @@ const PostList = props => {
   // list of posts to render
   const posts = props.posts.map(post => {
     // post title
-    const PostTitle = dope.createElement("h3", {
+    const PostTitle = dope.createElement('h3', {
       text: post.title,
       onClick: () => router.push(post.route)
     })
@@ -20,14 +20,14 @@ const PostList = props => {
     // pass date prop to PostDate
     const PostDateWithProps = withProps(PostDate, { date: post.date })
     // create snippet
-    const Snippet = dope.createElement("p", { text: post.snippet })
+    const Snippet = dope.createElement('p', { text: post.snippet })
     // the container for each post
-    return dope.createElement("div", {
+    return dope.createElement('div', {
       children: [PostTitle, PostLocationWithProps, PostDateWithProps, Snippet]
     })
   })
 
-  return dope.createElement("section", {
+  return dope.createElement('section', {
     children: posts
   })
 }

@@ -1,12 +1,13 @@
-import { Dope, withProps } from "./dope.js"
+import { Dope, withProps } from './dope.js'
 
-import Nav from "./Nav.js"
-import Header from "./Header.js"
-import PostList from "./PostList.js"
+import Nav from './Nav.js'
+import Header from './Header.js'
+import PostList from './PostList.js'
+import Post from './Post.js'
 
-const dope = new Dope({ posts: null })
+const dope = new Dope({ posts: null, post: null })
 
-fetch("./metadata.json")
+fetch('./metadata.json')
   .then(response => {
     return response.json()
   })
@@ -17,27 +18,23 @@ fetch("./metadata.json")
 const Root = () => {
   const router = dope.router()
 
-  const Loader = dope.createElement("h2", {
-    text: "Loading..."
-  })
-
   if (!dope.state.posts) {
-    return Loader
+    return dope.createElement('h2', { text: 'Loading...' })
   }
 
-  if (router.route !== "/") {
-    const isValidRoute = dope.state.posts.find(post => post.route === router.route)
-    if (!isValidRoute) {
-      return router.redirect("/")
-    }
+  const post = dope.state.posts.find(post => post.route === router.route)
+
+  if (!post && router.route !== '/') {
+    return router.redirect('/')
   }
 
-  const NavWithProps = withProps(Nav, { posts: dope.state.posts })
-  const HeaderWithProps = withProps(Header, { posts: dope.state.posts })
+  const NavWithProps = withProps(Nav, { post })
+  const HeaderWithProps = withProps(Header, { post })
   const PostListWithProps = withProps(PostList, { posts: dope.state.posts })
+  const PostWithProps = withProps(Post, { post })
 
-  return dope.createElement("div", {
-    children: [NavWithProps, HeaderWithProps, PostListWithProps]
+  return dope.createElement('div', {
+    children: [NavWithProps, HeaderWithProps, post ? PostWithProps : PostListWithProps]
   })
 }
 
