@@ -45,6 +45,10 @@ export class Dope {
       push: pathname => {
         window.history.pushState({}, pathname, window.location.origin + pathname)
         this._dispatchRender()
+      },
+      redirect: pathname => {
+        window.history.replaceState({}, pathname, window.location.origin + pathname)
+        this._dispatchRender()
       }
     }
   }
@@ -76,7 +80,8 @@ export class DopeDOM {
   }
 
   _createElement(component) {
-    const { element, props, symbol, isRootNode } = component()
+    const componentDetails = component()
+    const { element, props, symbol, isRootNode } = componentDetails
     const { style, text, children, onClick, ...rest } = props
 
     const el = document.createElement(element)
