@@ -5,23 +5,23 @@ import Header from './Header.js'
 import PostList from './PostList.js'
 import Post from './Post.js'
 
-const dope = new Dope({ posts: null, post: null })
-
-fetch('./metadata.json')
-  .then(response => {
-    return response.json()
-  })
-  .then(data => {
-    dope.state = { posts: data }
-  })
+const dope = new Dope({
+  posts: null,
+  post: null
+})
 
 const Root = () => {
-  const router = dope.router()
+  dope.onMount(async () => {
+    const response = await fetch('./metadata.json')
+    const posts = await response.json()
+    dope.state = { posts: posts }
+  })
 
   if (!dope.state.posts) {
     return dope.createElement('h2', { text: 'Loading...' })
   }
 
+  const router = dope.router()
   const post = dope.state.posts.find(post => post.route === router.route)
 
   if (!post && router.route !== '/') {

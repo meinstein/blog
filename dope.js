@@ -9,7 +9,6 @@ export class Dope {
     this._symbol = Symbol()
     this._state = state
     this._onMount = null
-    // document.addEventListener('onMount', () => this._onMount && this._onMount(), { once: true })
   }
 
   onMount(cb) {
@@ -74,13 +73,11 @@ export class Dope {
   _dispatchUpdate() {
     const event = new CustomEvent('update', {
       detail: {
-        onMount: () => this._onMount(),
         symbol: this._symbol
       }
     })
 
     document.dispatchEvent(event)
-    this.onMount = null
   }
 }
 
@@ -89,14 +86,14 @@ export class DopeDOM {
     this._nodeMap = {}
     this._rootComponent = rootComponent
     this._rootNode = rootNode
-    document.addEventListener('update', evt => this._update(evt.detail.symbol, evt.detail.onMount))
+    document.addEventListener('update', evt => this._update(evt.detail.symbol))
     document.addEventListener('render', () => this._render())
     window.onpopstate = () => this._render()
   }
 
   _createElement(component) {
     const componentDetails = component()
-    const { element, props, symbol, isRootNode } = componentDetails
+    const { element, props, symbol, onMount, isRootNode } = componentDetails
     const { style, text, children, onClick, ...rest } = props
 
     const el = document.createElement(element)
@@ -128,38 +125,42 @@ export class DopeDOM {
 
     // only add the root node from each component to the map
     if (isRootNode) {
-      this._nodeMap[symbol] = { element: el, component }
+      const hasSymbol = this._nodeMap[symbol]
+      // do not include onMount func if this symbol has already been added to the map prior
+      this._nodeMap[symbol] = { element: el, component, onMount: hasSymbol ? null : onMount }
     }
 
     return el
   }
 
-  _dispatchMount() {
-    const event = new CustomEvent('onMount')
-    document.dispatchEvent(event)
+  _invokeOnMount(symbol) {
+    Object.getOwnPropertySymbols(this._nodeMap).forEach(symbol => {
+      const { onMount } = this._nodeMap[symbol]
+      if (onMount) {
+        onMount()
+      }
+    })
   }
 
-  _update(symbol, onMount) {
-    console.log(onMount)
+  _update(symbol) {
     const { element: oldChild, component } = this._nodeMap[symbol]
-    Reflect.deleteProperty(this._nodeMap, symbol)
     const parentNode = oldChild.parentNode
     const newChild = this._createElement(component)
     parentNode.replaceChild(newChild, oldChild)
-    onMount()
+    this._invokeOnMount()
   }
 
   _render() {
     const newChild = this._createElement(this._rootComponent)
     const oldChild = this._rootNode.firstChild
     this._rootNode.replaceChild(newChild, oldChild)
-    this._dispatchMount()
+    this._invokeOnMount()
   }
 
   render() {
     const renderedRoot = this._createElement(this._rootComponent)
     this._rootNode.appendChild(renderedRoot)
-    this._dispatchMount()
+    this._invokeOnMount()
   }
 }
 
