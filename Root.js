@@ -18,7 +18,9 @@ const Root = () => {
   })
 
   if (!dope.state.posts) {
-    return dope.createElement('h2', { text: 'Loading...' })
+    return dope.createElement('div', {
+      children: [Nav]
+    })
   }
 
   const router = dope.router()

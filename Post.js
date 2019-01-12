@@ -14,15 +14,12 @@ const Post = props => {
   })
 
   if (!dope.state.markdown) {
-    const Loader = dope.createElement('p', {
-      text: 'Loading...'
-    })
-    return Loader
+    return dope.createElement('p')
   }
 
   const converter = new showdown.Converter()
 
-  return dope.createElement('div', {
+  return dope.createElement('p', {
     innerHTML: converter.makeHtml(dope.state.markdown)
   })
 }

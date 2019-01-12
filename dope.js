@@ -1,9 +1,3 @@
-/**
- * TODOS:
- * Accept null as a valid return from component
- * Accept lists of children to be returned from component
- */
-
 export class Dope {
   constructor(state = null) {
     this._symbol = Symbol()
@@ -22,8 +16,8 @@ export class Dope {
         if (typeof child === 'function') {
           return child
         }
-        // This element was instantiated inside a component rather ...
-        // ...than being returned by it. Cannot be component's root.
+        // This element was instantiated inside a component rather...
+        // ...than being returned by it, so cannot be componnet's root.
         child.isComponentRoot = false
         return () => child
       })
@@ -80,6 +74,11 @@ export class Dope {
   }
 }
 
+/**
+ * DopeDOM
+ * Renders dope elements.
+ * Recieves dope events.
+ */
 export class DopeDOM {
   constructor(rootComponent, rootNode) {
     this._nodeMap = {}
@@ -91,7 +90,7 @@ export class DopeDOM {
   }
 
   _createElement(component) {
-    // Every component is just a function that returns either a node or null.
+    // Every component is a function that returns a valid html element.
     const node = component()
 
     const el = document.createElement(node.element)
