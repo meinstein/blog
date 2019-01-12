@@ -16,24 +16,23 @@ export class Dope {
   }
 
   createElement(element, props = {}) {
-    const { children } = props
-    if (children) {
-      const updatedChildren = children.map(child => {
+    // Check for children and convert to funcs accordingly.
+    if (props.children) {
+      props.children = props.children.map(child => {
         if (typeof child === 'function') {
           return child
         }
-
-        child.isRootNode = false
+        // This element was instantiated inside a component rather ...
+        // ...than being returned by it. Cannot be component's root.
+        child.isComponentRoot = false
         return () => child
       })
-
-      props.children = updatedChildren
     }
 
     return {
       element,
       props,
-      isRootNode: true,
+      isComponentRoot: true,
       symbol: this._symbol,
       onMount: this._onMount
     }
@@ -92,42 +91,53 @@ export class DopeDOM {
   }
 
   _createElement(component) {
-    const componentDetails = component()
-    const { element, props, symbol, onMount, isRootNode } = componentDetails
-    const { style, text, children, onClick, ...rest } = props
+    // Every component is just a function that returns either a node or null.
+    const node = component()
 
-    const el = document.createElement(element)
+    const el = document.createElement(node.element)
 
-    if (style) {
-      const properties = Object.keys(style)
-      properties.forEach(property => (el.style[property] = style[property]))
+    if (node.props) {
+      const { style, text, children, onClick, ...rest } = node.props
+
+      if (style) {
+        const properties = Object.keys(style)
+        properties.forEach(property => (el.style[property] = style[property]))
+      }
+
+      if (text) {
+        const textNode = document.createTextNode(text)
+        el.appendChild(textNode)
+      }
+
+      if (children) {
+        children.forEach(child => {
+          const childNode = this._createElement(child)
+          el.appendChild(childNode)
+        })
+      }
+
+      if (onClick) {
+        el.addEventListener('click', onClick)
+      }
+
+      if (rest) {
+        const attributes = Object.keys(rest)
+        attributes.forEach(attribute => (el[attribute] = rest[attribute]))
+      }
     }
 
-    if (rest) {
-      const attributes = Object.keys(rest)
-      attributes.forEach(attribute => (el[attribute] = rest[attribute]))
-    }
-
-    if (text) {
-      const textNode = document.createTextNode(text)
-      el.appendChild(textNode)
-    }
-
-    if (onClick) {
-      el.addEventListener('click', onClick)
-    }
-
-    if (children) {
-      children.forEach(child => {
-        el.appendChild(this._createElement(child))
-      })
-    }
-
-    // only add the root node from each component to the map
-    if (isRootNode) {
-      const hasSymbol = this._nodeMap[symbol]
-      // do not include onMount func if this symbol has already been added to the map prior
-      this._nodeMap[symbol] = { element: el, component, onMount: hasSymbol ? null : onMount }
+    // Only add the root node from each component to the map.
+    // The root node is the immediate func(s) returned by each...
+    // ... call to dope.createElement(...).
+    if (node.isComponentRoot) {
+      const hasSymbol = this._nodeMap[node.symbol]
+      // Do not include onMount func if the symbol has...
+      // ...already been registered to the node map.
+      this._nodeMap[node.symbol] = {
+        element: el,
+        component,
+        onMount: hasSymbol ? null : node.onMount
+      }
     }
 
     return el
