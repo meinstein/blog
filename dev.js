@@ -1,7 +1,7 @@
-const http = require("http")
-const url = require("url")
-const fs = require("fs")
-const path = require("path")
+const http = require('http')
+const url = require('url')
+const fs = require('fs')
+const path = require('path')
 const port = process.argv[2] || 9000
 
 http
@@ -13,19 +13,19 @@ http
     let pathname = `.${parsedUrl.pathname}`
     // maps file extention to MIME typere
     const map = {
-      ".ico": "image/x-icon",
-      ".html": "text/html",
-      ".js": "text/javascript",
-      ".json": "application/json",
-      ".css": "text/css",
-      ".png": "image/png",
-      ".jpg": "image/jpeg",
-      ".md": "text/html"
+      '.ico': 'image/x-icon',
+      '.html': 'text/html',
+      '.js': 'text/javascript',
+      '.json': 'application/json',
+      '.css': 'text/css',
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.md': 'text/html'
     }
 
     // intercept root as index.html
-    if (pathname === "./") {
-      pathname += "index.html"
+    if (pathname === './') {
+      pathname += 'index.html'
     }
 
     // based on the URL path, extract the file extention. e.g. .js, .doc, ...
@@ -33,8 +33,8 @@ http
 
     // if there is no extension, redirect to index.html!
     if (!ext) {
-      pathname = "./index.html"
-      ext = ".html"
+      pathname = './index.html'
+      ext = '.html'
     }
 
     fs.exists(pathname, function(exist) {
@@ -52,7 +52,7 @@ http
           res.end(`Error getting the file: ${err}.`)
         } else {
           // if the file is found, set Content-type and send data
-          res.setHeader("Content-type", map[ext] || "text/plain")
+          res.setHeader('Content-type', map[ext] || 'text/plain')
           res.end(data)
         }
       })

@@ -1,9 +1,7 @@
-import { Dope } from '../dope.js'
-
-const dope = new Dope()
+const dope = new d0pe.Dope()
 
 const PostDate = props =>
-  dope.createElement('div', {
+  dope.make('div', {
     text: props.date,
     style: {
       fontSize: '0.7em',

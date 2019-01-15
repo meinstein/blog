@@ -1,6 +1,5 @@
-import { DopeDOM } from './dope.js'
-import Root from './Root.js'
+import Root from './components/Root.js'
 
 const rootElement = document.getElementById('root')
-const dopeDOM = new DopeDOM(Root, rootElement)
+const dopeDOM = new d0pe.DopeDOM(Root, rootElement)
 dopeDOM.render()
