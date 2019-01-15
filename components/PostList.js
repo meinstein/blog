@@ -8,9 +8,13 @@ const PostList = props => {
   const router = dope.router()
   // list of posts to render
   const posts = props.posts.map(post => {
+    // create link
+    const Link = dope.make('a', {
+      text: post.title
+    })
     // post title
     const PostTitle = dope.make('h3', {
-      text: post.title,
+      children: [Link],
       onClick: () => router.push(post.route)
     })
     // pass location prop to PostLocation

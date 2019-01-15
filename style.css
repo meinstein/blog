@@ -48,8 +48,8 @@ p {
   padding: 6px 0;
 }
 
-a * {
+a {
   text-decoration: underline;
-  color: #e54b4b;
+  color: red;
   cursor: pointer;
 }

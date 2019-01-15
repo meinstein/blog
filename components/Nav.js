@@ -2,18 +2,24 @@ const dope = new d0pe.Dope()
 
 const Nav = props => {
   const router = dope.router()
+  let H2 = null
 
-  const h2 = dope.make('h2', {
-    text: 'fuhqu.com',
-    style: {
-      color: router.route === '/' ? 'black' : 'red',
-      textDecoration: router.route === '/' ? 'none' : 'underline'
-    }
-  })
+  if (router.route === '/') {
+    H2 = dope.make('h2', {
+      text: 'fuhqu.com'
+    })
+  } else {
+    const Link = dope.make('a', {
+      text: 'fuhqu.com',
+      onClick: () => router.push('/')
+    })
+    H2 = dope.make('h2', {
+      children: [Link]
+    })
+  }
 
   return dope.make('nav', {
-    children: [h2],
-    onClick: router.route === '/' ? null : () => router.push('/')
+    children: [H2]
   })
 }
 
