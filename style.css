@@ -3,7 +3,7 @@ body {
   padding: 0;
   font-size: 20px;
   background: white;
-  color: #340bob;
+  color: #340BOB;
   font-family: Helvetica, Arial, sans-serif;
 }
 
@@ -48,8 +48,8 @@ p {
   padding: 6px 0;
 }
 
-a * {
+a {
   text-decoration: underline;
-  color: #e54b4b;
+  color: red;
   cursor: pointer;
 }

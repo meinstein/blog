@@ -2,14 +2,14 @@
 
 ## Motivation
 
-A simple blog with none of the over-engineered bells and whistles of typical JS frameworks. Vanilla JS. No extra transpilation step.
+A plain ol' blog with few bells and whistles. Built with `d0pe`. No transpilation step. UMD imports.
 
 ## Local Dev
 
-Spin the dev server:
+Start the dev server:
 
 ```
-node devServer.js
+node dev.js
 ```
 
 And navigate to: `localhost:9000`
@@ -19,7 +19,7 @@ And navigate to: `localhost:9000`
 Adding a post is a two-step process:
 
 1. Add a `.md` file with the post content
-2. Update the `metadata.json` file at the root of the project with the relevant details. The `slug` property must match the file name (without .md extension). The `snippet` property is the first paragraph from the piece.
+2. Update the `metadata.js` file at the root of the project with the relevant details. The `route` must match the file name (without .md extension).
 
 ## Publishing
 
