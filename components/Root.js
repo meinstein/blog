@@ -4,9 +4,7 @@ import Header from './Header.js'
 import PostList from './PostList.js'
 import Post from './Post.js'
 
-const dope = new d0pe.Dope()
-
-const Root = () => {
+const Root = dope => {
   const router = dope.router()
   const post = posts.find(post => post.route === router.route)
 

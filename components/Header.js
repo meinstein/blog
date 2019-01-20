@@ -1,9 +1,7 @@
 import PostLocation from './PostLocation.js'
 import PostDate from './PostDate.js'
 
-const dope = new d0pe.Dope()
-
-const Header = props => {
+const Header = (dope, props) => {
   const children = []
 
   const Title = dope.make('h1', {

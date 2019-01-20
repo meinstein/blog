@@ -1,6 +1,4 @@
-const dope = new d0pe.Dope()
-
-const PostDate = props =>
+const PostDate = (dope, props) =>
   dope.make('div', {
     text: props.date,
     style: {

@@ -1,6 +1,4 @@
-const dope = new d0pe.Dope()
-
-const Nav = props => {
+const Nav = (dope, props) => {
   const router = dope.router()
   let H2 = null
 

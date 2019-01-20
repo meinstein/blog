@@ -1,6 +1,4 @@
-const dope = new d0pe.Dope()
-
-const PostLocation = props =>
+const PostLocation = (dope, props) =>
   dope.make('div', {
     text: props.location,
     style: {

@@ -1,9 +1,7 @@
 import PostLocation from './PostLocation.js'
 import PostDate from './PostDate.js'
 
-const dope = new d0pe.Dope()
-
-const PostList = props => {
+const PostList = (dope, props) => {
   // grab router
   const router = dope.router()
   // list of posts to render
