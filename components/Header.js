@@ -1,3 +1,5 @@
+import { withProps } from 'https://unpkg.com/domdope'
+
 import PostLocation from './PostLocation.js'
 import PostDate from './PostDate.js'
 
@@ -10,9 +12,9 @@ const Header = (dope, props) => {
   children.push(Title)
 
   if (props.post) {
-    const PostLocationWithProps = dope.inject(PostLocation, { location: props.post.location })
+    const PostLocationWithProps = withProps(PostLocation, { location: props.post.location })
     children.push(PostLocationWithProps)
-    const PostDateWithProps = dope.inject(PostDate, { date: props.post.date })
+    const PostDateWithProps = withProps(PostDate, { date: props.post.date })
     children.push(PostDateWithProps)
   }
 

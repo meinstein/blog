@@ -1,15 +1,16 @@
+import { withRouter } from 'https://unpkg.com/domdope'
+
 const Nav = (dope, props) => {
-  const router = dope.router()
   let H2 = null
 
-  if (router.route === '/') {
+  if (props.router.location === '/') {
     H2 = dope.make('h2', {
       text: 'fuhqu.com'
     })
   } else {
     const Link = dope.make('a', {
       text: 'fuhqu.com',
-      onClick: () => router.push('/')
+      onClick: () => props.router.goTo('/')
     })
     H2 = dope.make('h2', {
       children: [Link]
@@ -21,4 +22,4 @@ const Nav = (dope, props) => {
   })
 }
 
-export default Nav
+export default withRouter(Nav)
