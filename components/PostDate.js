@@ -1,10 +1,6 @@
-const PostDate = (dope, props) =>
-  dope.make('div', {
+export default function(dope, props) {
+  return dope.make("div", {
     text: props.date,
-    style: {
-      fontSize: '0.7em',
-      lineHeight: '1.5em'
-    }
+    className: "PostDate__container"
   })
-
-export default PostDate
+}
