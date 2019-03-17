@@ -1,10 +1,10 @@
 export default function(dope) {
   const CreatedBy = dope.make("span", {
-    text: "Created by: "
+    text: "Created by "
   })
   const BioLink = dope.make("a", {
     href: "https://meinstein.github.io",
-    text: "Maximillian Einstein"
+    text: "meinstein"
   })
 
   return dope.make("footer", {
