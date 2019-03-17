@@ -1,13 +1,13 @@
 export default function(dope) {
-  const Text = dope.make("span", {
-    text: "Built with "
+  const CreatedBy = dope.make("span", {
+    text: "Created by: "
   })
-  const Link = dope.make("a", {
-    href: "https://github.com/meinstein/domdope",
-    text: "DomDope"
+  const BioLink = dope.make("a", {
+    href: "https://meinstein.github.io",
+    text: "Maximillian Einstein"
   })
 
   return dope.make("footer", {
-    children: [Text, Link]
+    children: [CreatedBy, BioLink]
   })
 }
