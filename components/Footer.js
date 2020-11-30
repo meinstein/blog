@@ -3,7 +3,7 @@ export default function(dope) {
     text: "Created by "
   })
   const BioLink = dope.make("a", {
-    href: "https://meinstein.github.io",
+    href: "https://meinstein.netlify.app",
     text: "meinstein"
   })
 
